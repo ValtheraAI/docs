@@ -2,7 +2,7 @@
 
 > **Valthera. Capital allocated by intelligence.**
 
-Valthera is a proposed AI-native capital market. Projects submit their materials, independent AI investment agents assess and value them, and capital flows according to explicit mandates, permissions, and legal agreements. Every decision is saved and later checked against real outcomes.
+Valthera is a proposed AI-native capital market with two venues: **rounds**, where early-stage companies raise through equity-style instruments (SAFEs, priced equity, convertible notes) settled through regulated partners, and **token launches**, a decentralized launchpad where projects sell their token before it launches. Projects submit their materials; Valthera labels the evidence behind every claim and values the opportunity; buyers, both AI agents and human investors (including retail buyers in token launches, where the law permits), commit under explicit mandates, permissions, and legal terms. Every decision is saved and later checked against real outcomes.
 
 This folder holds the project's foundational documents.
 
@@ -12,9 +12,9 @@ This folder holds the project's foundational documents.
 
 | Document | What it is | Read it if you want to… |
 |---|---|---|
-| **[`Valthera_Whitepaper_v1.0.pdf`](./Valthera_Whitepaper_v1.0.pdf)**| **Version 1.0 technical whitepaper:** architecture, evidence engine, valuation engine, mandate policy language, permission tiers and policy vaults, capital-formation mechanisms (books, uniform-price auctions, milestone tranches), settlement, scoring, threat model, API reference and schemas. Also covers: problem, design principles, system architecture, evidence engine, valuation framework, agent mandates and permissions, capital formation, track records, security, legal considerations, business model, roadmap, and risks. | Understand what Valthera is and how it would work. |
+| **[`Valthera_Whitepaper_v1.0.pdf`](./Valthera_Whitepaper_v1.0.pdf)**| **Technical whitepaper (PDF of version 1.0; the `.md` is now version 1.1, see below):** architecture, evidence engine, valuation engine, mandate policy language, permission tiers and policy vaults, capital-formation mechanisms (books, uniform-price auctions, milestone tranches), settlement, scoring, threat model, API reference and schemas. Also covers: problem, design principles, system architecture, evidence engine, valuation framework, agent mandates and permissions, capital formation, track records, security, legal considerations, business model, roadmap, and risks. | Understand what Valthera is and how it would work. |
 | **[`Valthera_Research_Report_v1.0.pdf`](./Valthera_Research_Report_v1.0.pdf)** | The research behind the whitepaper. Six research questions are answered from primary sources (SEC, FINRA, Federal Register, OWASP, METR, OECD.AI, AngelList), with confidence ratings and known gaps. | Check the facts behind the whitepaper, or see what's still unresolved. |
-| [`Valthera_Whitepaper_v1.0.md`](./Valthera_Whitepaper_v1.0.md) | Markdown source of the v1.0 whitepaper PDF. | Read or edit the whitepaper as text. |
+| [`Valthera_Whitepaper_v1.0.md`](./Valthera_Whitepaper_v1.0.md) | Markdown source of the whitepaper, now **version 1.1**: adds the token-launch venue, human and retail buyers, token metrics from proposed terms, vesting vaults, and the matching legal and risk sections. | Read the current whitepaper. |
 | [`Valthera_Whitepaper.md`](./Valthera_Whitepaper.md) | An earlier, shorter draft (19 sections). **Superseded by v1.0**, kept for history. | Compare with v1.0. Not the current version. |
 
 **Suggested reading order:** the Whitepaper's Abstract and Sections 1–3, then the Research Report's *Confidence and gaps* section, then the rest of the Whitepaper.
@@ -26,8 +26,9 @@ This folder holds the project's foundational documents.
 1. **Evidence over narrative.** Every claim a project makes gets a label: *Verified, Supported, Reported, Projected, Contradicted,* or *Unknown*.
 2. **Many judgments, not one score.** Independent agents with different mandates produce competing assessments.
 3. **Valuation is a range.** Each assessment gives base, upside, and downside cases with stated assumptions. It also keeps three questions separate: what the project is worth, what it is asking, and what price a given agent would pay.
-4. **Autonomy doesn't mean unlimited authority.** Agents move up tiered permissions (Recommend → Indicate → Conditional commit → Bounded execution). Hard limits are enforced outside the model.
-5. **Accountability over time.** Decision records can't be changed afterward. Forecast accuracy and investment returns are scored separately.
+4. **Two venues, one evidence layer.** Equity-style rounds and token launches share the same labels, valuation engine, mandates, and scoring. Token launches also publish an unlock profile before every sale.
+5. **Autonomy doesn't mean unlimited authority.** Agents move up tiered permissions (Recommend → Indicate → Conditional commit → Bounded execution). Hard limits are enforced outside the model.
+6. **Accountability over time.** Decision records can't be changed afterward. Forecast accuracy and investment returns are scored separately.
 
 ---
 
@@ -36,7 +37,7 @@ This folder holds the project's foundational documents.
 - **US legal structure:** a registered funding portal can't give investment recommendations or handle investor funds. Valthera has to separate its research and fundraising businesses, go through a broker-dealer, or raise capital outside the US. See Whitepaper §20.
 - **Security:** prompt injection is OWASP's top-ranked LLM risk. In a documented May 2026 incident, an AI agent connected to a wallet was tricked into transferring roughly $150K–$200K. See Whitepaper §11 and §16.
 - **Market timing:** agents are getting more capable, but agent payment volume is still small and partly artificial. Valthera starts with people reviewing agent output, not with agents moving money on their own. See Whitepaper §22.
-- **No token at launch.** A token would be considered only if it solves a clearly defined problem, and only after legal review.
+- **No Valthera token.** Projects can sell their own tokens in launches, but Valthera doesn't issue one. A Valthera token would be considered only if it solves a clearly defined problem, and only after legal review.
 
 ---
 
@@ -44,7 +45,7 @@ This folder holds the project's foundational documents.
 
 | Item | Status |
 |---|---|
-| Whitepaper | **Version 1.0** |
+| Whitepaper | **Version 1.1** (`.md`); the PDF still shows 1.0 |
 | Research report | **Version 1.0** (October 2026) |
 | Legal review | **Not started.** Required before publication |
 | Team, entity, and contact sections | **To be added** |

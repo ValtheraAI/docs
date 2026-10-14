@@ -1,27 +1,32 @@
 ---
 title: "Valthera"
-subtitle: "Technical Whitepaper — Infrastructure for an AI-Native Capital Market"
-version: "1.0"
-date: "13 October 2026"
+subtitle: "Technical Whitepaper — An AI-Native Capital Market and Token Launchpad"
+version: "1.1"
+date: "15 October 2026"
 ---
 
 <div class="notice">
 
-**Important notice.** This whitepaper describes the Valthera protocol and platform as designed. It is not an offer to sell or a solicitation of an offer to buy any security, token, or other financial instrument, and it is not investment, legal, or tax advice. Any capital-formation functionality described here will operate only where, and in the form, applicable law permits. Statements about future functionality describe the design and are not guarantees. Valthera does not issue a token.
+**Important notice.** This whitepaper describes the Valthera protocol and platform as designed. It is not an offer to sell or a solicitation of an offer to buy any security, token, or other financial instrument, and it is not investment, legal, or tax advice. Capital formation and token sales described here will run only where, and in the form, applicable law permits; a project token sold through Valthera may be a security in some jurisdictions. Statements about future functionality describe the design and are not guarantees. Valthera itself does not issue a token.
 
 </div>
 
 # Abstract
 
-Capital markets were designed around human workflows: pitch decks, meetings, analyst reports, and investment committees. AI agents can now research businesses, use software tools, and execute transactions. Open payment standards already let them pay one another. What they lack is a structured environment in which to discover investment opportunities, examine the evidence behind them, value them, commit capital under enforceable rules, and be held accountable for how those decisions turn out.
+Capital markets were designed around human workflows: pitch decks, meetings, analyst reports, and investment committees. Token launches are sold on narrative: a whitepaper, a community, a countdown. In both, buyers rarely see which claims are true or what the project is plausibly worth, and in token launches the unlock schedule is often the least visible term. Meanwhile AI agents can now research projects, use software tools, and execute transactions, and open payment standards already let them pay one another. What they lack is a structured environment in which to examine the evidence, value an opportunity, commit capital under enforceable rules, and be held accountable for how those decisions turn out.
 
-Valthera provides that environment. It has six layers:
+Valthera provides that environment, with two venues on one evidence layer:
+
+- **Rounds**, the core: early-stage companies raise through equity-style instruments (post-money SAFEs, priced equity, convertible notes), settled through regulated partners.
+- **Token launches**: projects list before their token exists and sell it in non-custodial sale contracts to agents and people, including retail buyers where the law permits, with team and investor allocations vesting on chain.
+
+It has six layers:
 
 1. A **Submission Layer** that ingests project materials and records where each item came from.
 2. An **Evidence Engine** that turns those materials into atomic claims and labels each one by how well it is supported.
 3. An **Opportunity Registry** that publishes each opportunity as a versioned, machine-readable object.
 4. An **Agent Network** of independent investment agents, each operating under a signed, machine-readable mandate.
-5. A **Capital Formation and Execution** layer with an explicit commitment state machine, enforced through policy-constrained smart-contract vaults and regulated settlement partners.
+5. A **Capital Formation and Execution** layer: rounds and token sales share one commitment state machine and the same formats (fixed price, commitment book, uniform-price auction, milestone tranches). Every agent commitment is checked against its mandate in a policy engine and again in an onchain vault; rounds settle through regulated partners, token sales in non-custodial escrow contracts.
 6. An **Accountability Layer** that saves every decision with what was known when it was made, anchors it onchain, and scores it with proper scoring rules and risk-adjusted return metrics.
 
 This document specifies each layer: its data structures, algorithms, interfaces, security model, and compliance architecture.
@@ -41,7 +46,7 @@ This document specifies each layer: its data structures, algorithms, interfaces,
 9. Agent Network and Runtime
 10. Mandates and Policy Language
 11. Permission and Execution Layer
-12. Capital Formation Mechanisms
+12. Capital Formation and Token Sales
 13. Settlement and Custody
 14. Accountability Layer: Decision Records and Scoring
 15. Identity, Reputation, and Conflicts
@@ -70,15 +75,16 @@ The question behind Valthera is simple: **what happens when the investors themse
 
 AI agents are becoming economic participants. The length of software tasks that frontier agents can complete autonomously with 50% reliability has doubled roughly every seven months over six years [1]. Payment protocols such as x402 let software settle stablecoin payments directly over HTTP [2]. As agents take on more economic roles (running services, managing treasuries, building businesses), some of them will need to allocate capital. Today they would have to do so through infrastructure that assumes a person reads the deck, judges the claims, and signs the commitment.
 
-Valthera is **not** a token launchpad, a research chatbot, or a trading bot. It is an **AI-native capital market** with the following properties:
+Valthera is an **AI-native capital market** with two venues: **rounds**, where early-stage companies raise through equity-style instruments, and **token launches**, a decentralized launchpad where projects sell their token before it launches to agents and people, including retail buyers where the law permits. It is not a research chatbot or a trading bot. Both venues share these properties:
 
 - Projects present themselves in a structured, machine-readable format.
+- Every material claim is linked to its evidence and labeled by verification status before anyone commits.
+- Every opportunity is valued as a range; token launches also get an unlock profile from their proposed terms.
 - Many independent agents evaluate each opportunity. No single model decides.
-- Every material finding is linked to its evidence and labeled by verification status.
-- Capital moves only under signed mandates, enforced permissions, and binding legal agreements.
+- Capital moves only under signed mandates and enforced permissions: rounds through binding legal agreements and regulated partners, token sales through non-custodial escrow contracts with vesting enforced on chain.
 - Every decision is saved, anchored onchain, and scored against outcomes.
 
-Humans and agents participate on equal terms. The platform supports the full investment cycle: discovery, diligence, thesis, negotiation, commitment, settlement, monitoring, and reinvestment.
+Humans and agents participate on equal terms. The platform supports the full cycle: discovery, diligence, valuation, commitment, settlement, vesting, monitoring, and reinvestment.
 
 # 2. Problem Statement
 
@@ -98,7 +104,11 @@ AI tools can summarize documents and review code, but their output ends in a rep
 
 Agent payment infrastructure is maturing. Its foundation's members include major cloud, payments, and AI companies [2]. Actual economic usage is still small, though, and a meaningful share of observed transactions has been described as artificial [3]. In any case, a payment rail only moves money. It does not evaluate opportunities, enforce mandates, or produce verifiable track records. Valthera supplies those missing layers and treats payment rails as interchangeable components.
 
-## 2.5 Early-stage returns are heavy-tailed
+## 2.5 Token launches sell on hype, not evidence
+
+Token launchpads today rank projects by social reach and allocate by staking, lotteries, or speed. Claims in a project's materials are rarely checked, valuations are set by the project, and the unlock schedule (how much supply reaches the market, and when) is often the least visible term. Buyers who are bots compete on reaction time, not judgment, and retail buyers often see the least. Valthera's token-launch venue turns that around: the evidence, the valuation range, and the unlock profile are published to every buyer before the sale, and agents compete on the quality of their decisions, which are scored over time.
+
+## 2.6 Early-stage returns are heavy-tailed
 
 Early-stage returns follow an extreme power-law distribution. A small number of outliers dominate portfolio performance [4]. Selection quality therefore matters a great deal, short-term return records are noisy, and any system that rates investors must account for both facts (see Section 14).
 
@@ -132,8 +142,8 @@ Early-stage returns follow an extreme power-law distribution. A small number of 
 └───┬─────────────┬───────────────┬───────────────┬──────────────┬─────┘
     │             │               │               │              │
 ┌───▼────┐  ┌─────▼──────┐  ┌─────▼──────┐  ┌─────▼──────┐ ┌─────▼──────┐
-│Submiss-│  │ Evidence   │  │Opportunity │  │  Agent     │ │ Capital    │
-│ion     │─▶│ Engine     │─▶│ Registry   │◀▶│  Network   │▶│ Formation  │
+│Submiss-│  │ Evidence   │  │Opportunity │  │  Agent     │ │ Rounds &   │
+│ion     │─▶│ Engine     │─▶│ Registry   │◀▶│  Network   │▶│ Token Sales│
 │Layer   │  │            │  │            │  │  + Policy  │ │ & Execution│
 └────────┘  └────────────┘  └─────┬──────┘  └─────┬──────┘ └─────┬──────┘
                                   │               │              │
@@ -160,7 +170,7 @@ Early-stage returns follow an extreme power-law distribution. A small number of 
 | `valuation` | Scenario engine, Monte Carlo, method library | Deterministic compute service, auditable inputs |
 | `agents` | Agent registration, runtime sandbox, tool gateway | Containerized runtimes, scoped credentials |
 | `policy` | Mandate compilation and pre-trade checks | Declarative policy language (Section 10) |
-| `capital` | Rounds, books, auctions, tranches, state machine | Transactional database, legal-document integration |
+| `capital` | Rounds and token sales: books, auctions, tranches, vesting, state machine | Transactional database, legal-document integration, sale and vesting contracts |
 | `settle` | Vault orchestration, partner settlement | Smart-contract vaults, custodian and escrow APIs |
 | `ledger` | Decision records, outcome ingestion, scoring | Append-only store, Merkle batching, onchain anchor |
 | `identity` | Operator KYC/KYB, agent keys, attestations | Signed attestations, key rotation |
@@ -176,7 +186,7 @@ Early-stage returns follow an extreme power-law distribution. A small number of 
    ▶ submits Assessment (signed) ▶ ledger snapshots DecisionRecord
 6. Agent optionally submits Indication / Conditional Commitment
    ▶ policy pre-checks against mandate ▶ capital records state
-7. Round closes ▶ compliance gates ▶ binding agreements executed
+7. Round or sale closes ▶ compliance gates ▶ agreements executed (round) or tokens delivered to buyers' vaults (sale)
    ▶ settle moves funds via vault / escrow / intermediary
 8. Milestones & metrics ingested over time ▶ ledger resolves forecasts
    ▶ scoring updates agent track records
@@ -243,7 +253,7 @@ The extraction model breaks submissions into **atomic claims**: single, checkabl
 | Code quality | Repository adapter | Static analysis, dependency vulnerability scan, test coverage, commit history |
 | Smart-contract risk | Contract adapter | Verified-source match, static analysis, privileged-role mapping, upgradeability, existing audits |
 | Market size | TAM decomposer | Rebuild TAM bottom-up from stated assumptions and test each one |
-| Token supply | Token adapter | Reconcile stated circulating supply, total supply, and vesting with contract state |
+| Token terms | Token adapter | Before launch: reconcile the proposed supply, allocations, and vesting with the deployed sale and vesting contracts (testnet or mainnet). After launch: reconcile stated circulating supply with contract state |
 
 ## 6.4 Onchain activity analysis
 
@@ -320,7 +330,7 @@ DRAFT ─▶ UNDER_VERIFICATION ─▶ OPEN_FOR_ASSESSMENT ─▶ RAISING
 
 ## 7.3 Event stream
 
-Agents subscribe through webhooks or streaming to events filtered by their mandate. Event types: `opportunity.published`, `opportunity.updated`, `claim.relabeled`, `round.opened`, `round.book_updated`, `round.closed`, `milestone.reported`, `milestone.verified`, `outcome.recorded`.
+Agents subscribe through webhooks or streaming to events filtered by their mandate. Event types: `opportunity.published`, `opportunity.updated`, `claim.relabeled`, `round.opened`, `round.book_updated`, `round.closed`, `sale.opened`, `sale.book_updated`, `sale.closed`, `milestone.reported`, `milestone.verified`, `outcome.recorded`.
 
 # 8. Valuation Engine
 
@@ -353,17 +363,21 @@ E[Exit_T]  = Σ_k p_k · Exit_k      (scenario-weighted)
 
 **Milestone-based (pre-product).** The capital needed to reach the next value-inflection milestone, set against the valuation step-up achieved by comparable companies at that milestone, weighted by the probability of reaching it.
 
-## 8.4 Token-specific metrics
+## 8.4 Token metrics
 
-These quantities are always reported separately and never treated as interchangeable:
+In a token launch the project lists before its token exists, so the token is analyzed from its **proposed terms**: total supply, allocations, the vesting of each allocation, and the sale price. These quantities are always reported separately and never treated as interchangeable:
 
 ```
-Market cap (circulating)   = P × S_circulating
-Fully diluted valuation    = P × S_max
-Unlock overhang (t)        = Σ scheduled unlocks in [now, now+t] / S_circulating
-Treasury-adjusted value    = FDV − liquid treasury assets
-Rights profile             = {governance, fee claim, redemption, none}
+FDV at sale price           = P_sale × S_max
+Launch market cap           = P_sale × S_circulating(0)
+Circulating share (t)       = Σ_allocations share × unlocked(t),  t = 0, 6, 12, 24, 36, 48 months
+Unlock overhang (12 months) = (S_circulating(12) − S_circulating(0)) / S_circulating(0)
+Insider share               = Σ shares held by team, investors, and advisors
+Treasury-adjusted value     = FDV − liquid treasury assets
+Rights profile              = {governance, fee claim, redemption, none}
 ```
+
+The unlock overhang is often the most decision-relevant number a launch has: a sale where only 5% of supply circulates at launch and a further 3.5× that amount unlocks within a year carries heavy sell pressure regardless of the project's quality. After launch, the same metrics are recomputed from contract state at the market price.
 
 A token with no claim on cash flows is flagged as `NO_ECONOMIC_RIGHTS`, and equity-style valuation methods are disabled for it.
 
@@ -462,7 +476,7 @@ evidence_requirements:
 risk_limits:
   max_position_pct: 0.02          # of committed capital
   max_category_pct: 0.30
-  max_single_round_share: 0.25    # of round size
+  max_single_raise_share: 0.25    # of round or sale size
   max_illiquid_pct: 0.85
   max_daily_commit_usd: 100000
 
@@ -520,10 +534,10 @@ Limits are enforced **twice**: off-chain in the policy engine and on-chain in th
 
 Each agent's capital is held in a smart-contract account (for example a Safe multisig with policy modules, or an ERC-4337 smart account [6]) configured as follows:
 
-- **Allowlisted counterparties:** only escrow contracts of rounds that Valthera has approved.
+- **Allowlisted counterparties:** only escrow contracts of rounds and sales listed on Valthera.
 - **Spending limits** per transaction, per day, and in total.
 - **Asset allowlist** (for example, specific stablecoins).
-- **Session keys:** short-lived keys scoped to one round and an amount cap.
+- **Session keys:** short-lived keys scoped to one round or sale and an amount cap.
 - **Timelock** on any change to limits or the allowlist.
 - **Guardian role:** can pause or revoke but cannot withdraw to arbitrary addresses.
 - **Separation of duties:** custody (owner keys), execution (session keys), and withdrawal (owner multisig plus timelock) are held separately.
@@ -553,7 +567,9 @@ Platform-wide halts trigger on anomalous conditions, for example:
 
 When a breaker trips, new binding transitions are frozen until people review the situation.
 
-# 12. Capital Formation Mechanisms
+# 12. Capital Formation and Token Sales
+
+Rounds and token sales use one commitment state machine and the same sale formats. They differ in what is sold and how it settles (Section 13).
 
 ## 12.1 Commitment state machine
 
@@ -566,44 +582,47 @@ ASSESSED ─▶ INDICATED ─▶ CONDITIONALLY_COMMITTED ─▶ BINDING ─▶ F
 
 - `INDICATED`: non-binding, priced, visible in the book.
 - `CONDITIONALLY_COMMITTED`: binding subject to stated conditions (human approval, minimum close, verified milestone).
-- `BINDING`: legal agreement executed and policy checks passed.
+- `BINDING`: policy checks passed and the commitment is legally binding: the round's legal agreement is executed, or the token sale's terms are accepted with the agent's key.
 - `FUNDED_IN_ESCROW`: funds held by the escrow contract or regulated escrow agent.
-- `SETTLED`: the round closed and instruments were issued. Funds go to the issuer.
+- `SETTLED`: the round or sale closed. A round issues its instruments; a token sale delivers tokens to the buyers' vaults, subject to any vesting. Proceeds go to the issuer, released in tranches where used.
 
 Each transition is signed, timestamped, and written to the ledger. "Attractive" (an assessment) can never be confused with "capital committed."
 
-## 12.2 Fixed-price rounds
+A token sale can open only after the project has deposited the tokens being sold into the sale contract and the team and investor allocations into vesting vaults (Section 18). Buyers never depend on the project delivering tokens later.
 
-The project sets price and size. Commitments fill first-come or pro-rata, subject to a minimum-close threshold. If the minimum is not reached by the deadline, all escrowed funds are refunded automatically.
+## 12.2 Fixed price
+
+The project sets the price (a valuation cap for a round, a token price for a sale) and the size. Commitments fill first-come or pro-rata, subject to a minimum-close threshold. If the minimum is not reached by the deadline, all escrowed funds are refunded automatically.
 
 ## 12.3 Commitment book with price discovery
 
-Agents submit indications as (price cap, amount) pairs. The project sees an aggregated demand curve (amount available at each valuation) without agent identities until close. The project can accept a clearing valuation, revise terms, or withdraw.
+Agents submit indications as (price cap, amount) pairs. The project sees an aggregated demand curve (amount available at each valuation, or at each token price for a sale) without agent identities until close. The project can accept a clearing valuation, revise terms, or withdraw.
 
 ## 12.4 Uniform-price auction
 
-For larger or oversubscribed rounds:
+For larger or oversubscribed rounds and sales:
 
-1. Bidders submit sealed bids (valuation cap v_i, amount a_i). Bids are commitment-hashed during the bidding window.
+1. Agents submit sealed bids (valuation cap or token price v_i, amount a_i). Bids are commitment-hashed during the bidding window.
 2. Bids are revealed and sorted by v_i, descending.
-3. The clearing valuation v* is the highest valuation at which the cumulative bid amount Σ a_i, over bids with v_i ≥ v*, covers the target raise.
-4. All winning bidders invest at the same valuation v*. Pro-rata allocation applies at the margin.
+3. The clearing level v* is the highest valuation or price at which the cumulative bid amount Σ a_i, over bids with v_i ≥ v*, covers the target size.
+4. All winning bidders invest at the same v*. Pro-rata allocation applies at the margin.
 
 A uniform price reduces winner's-curse pressure and rewards truthful bidding more than pay-as-bid formats do.
 
 ## 12.5 Milestone tranches
 
-Capital is committed in full but released in tranches:
+Investors and buyers pay in full, but the project receives the proceeds in tranches:
 
 ```
 Tranche k released iff milestone_k.status == VERIFIED
    (verification: connector data or ≥2 independent verifier agents + human sign-off)
-Unreleased tranches: refundable to investors if milestone deadline passes
+Unreleased tranches: refundable pro rata if the milestone deadline passes
 ```
 
 ## 12.6 Instruments
 
-Supported instruments depend on jurisdiction and partner: post-money SAFEs, priced equity, convertible notes, revenue-share agreements, and (where lawful) tokenized securities. Token warrants are supported only where a legal review permits them.
+- **Rounds:** post-money SAFEs, priced equity, convertible notes, revenue-share agreements, and (where lawful) tokenized securities, depending on jurisdiction and partner.
+- **Token sales:** the project's own token, delivered at close; or, where a legal review permits it, a token warrant (a right to tokens at launch). Buyers are agents and people, including retail buyers where the law permits. Where a token would be a security in a buyer's jurisdiction, the sale runs under an applicable exemption with that jurisdiction's eligibility gates and investor limits, or excludes that jurisdiction or that class of buyer (Section 20).
 
 # 13. Settlement and Custody
 
@@ -611,17 +630,21 @@ Supported instruments depend on jurisdiction and partner: post-money SAFEs, pric
 
 | Path | When used | Custody |
 |---|---|---|
-| Onchain escrow contract | Stablecoin settlement where permitted | Smart contract. Funds released only by close or refund logic |
-| Regulated escrow agent | Fiat settlement, Reg CF and similar regimes | Licensed third party |
-| Broker-dealer settlement | US offerings involving recommendations | Registered broker-dealer partner |
+| Regulated escrow agent | Rounds: fiat settlement, Reg CF and similar regimes | Licensed third party |
+| Broker-dealer settlement | Rounds: US offerings involving recommendations | Registered broker-dealer partner |
+| Onchain sale escrow | Token sales: stablecoin payment, token delivery at close | Smart contract. Funds and tokens move only by close or refund logic |
+| Registered intermediary | Token sales of tokens that are securities in a jurisdiction requiring one | Registered broker-dealer or equivalent partner |
 
-Valthera's own operating entities **never take discretionary custody** of investor funds.
+Valthera's own operating entities **never take custody** of investors' funds or projects' tokens.
 
 ## 13.2 Escrow contract (summary)
 
-- `deposit(roundId, amount)` is accepted only from allowlisted, KYC-cleared vaults.
-- `close(roundId)` can be called only when minimum close is met, compliance is attested, and the deadline is valid.
-- `refund(roundId)` becomes callable by anyone after the deadline if minimum close was not met.
+Rounds use `RoundEscrow`; token sales use `SaleEscrow`, which adds token custody:
+
+- `open(id)` (token sales) succeeds only once the sale tokens and the vesting allocations are deposited.
+- `deposit(id, amount)` is accepted only from verified buyers: agents' policy vaults with KYC-cleared operators, or people's verified wallets. Each deposit is checked against the buyer's jurisdiction, eligibility, and investor limits.
+- `close(id)` can be called only when minimum close is met, compliance is attested, and the deadline is valid. A token sale's close also delivers tokens to the buyers' vaults and starts the proceeds' tranche schedule.
+- `refund(id)` becomes callable by anyone after the deadline if minimum close was not met; a token sale's refund also returns the project's deposited tokens.
 - Close and refund are mutually exclusive. Both emit events consumed by the ledger.
 
 ## 13.3 Payment rails
@@ -677,7 +700,7 @@ The reference forecast is the base rate for that question class. Valthera also r
 | Loss ratio | Share of capital in positions marked below 0.5× |
 | Max drawdown | Peak-to-trough on marked NAV |
 
-Unrealized marks are labeled by source: last round, comparables, or impairment. They are never mixed with realized returns.
+Unrealized marks are labeled by source: market price, last round, comparables, or impairment. They are never mixed with realized returns.
 
 ## 14.5 Why the two scores are separate
 
@@ -796,12 +819,14 @@ Valthera minimizes personal data, enforces retention schedules, honors data-subj
 | `AgentRegistry` | Agent public keys, operator binding, tier, revocation |
 | `PolicyVault` (module) | Per-agent spending policy enforcement |
 | `RoundEscrow` | Deposits, close, and refund for each round |
-| `TrancheController` | Milestone-gated release |
+| `SaleEscrow` | Token sales: holds the sale tokens and buyers' payments; open, close (token delivery), and refund |
+| `VestingVault` | Holds team, investor, and advisor allocations and releases them on the published schedule; no early release |
+| `TrancheController` | Milestone-gated release of sale proceeds to the project |
 | `RecordAnchor` | Periodic Merkle roots of decision records |
 
 **Design rules:**
 
-- Minimal on-chain logic, with no token dependency.
+- Minimal on-chain logic. Valthera has no token of its own; project tokens are held only by sale and vesting contracts, never by Valthera.
 - Upgrades sit behind a timelock and multisig.
 - Contracts can be deployed on multiple EVM networks, and the adapter pattern allows non-EVM chains.
 
@@ -809,6 +834,8 @@ Blockchain enforces and records. It does **not** verify identity, revenue, or ma
 
 # 19. Governance
 
+- **What is decentralized (token launches):** sales settle in non-custodial contracts that no Valthera entity can redirect; vesting is enforced by contract, not by promise; any verified buyer can take part, whether an agent whose mandate passes the policy checks or a person whose eligibility is attested; decision records are anchored onchain and verifiable by anyone; and the evidence labels and valuations for every sale are published to every participant at once.
+- **What is not:** rounds settle through regulated partners by design; evidence labeling, valuation, agent admission, and jurisdiction gating are run by Valthera under published methodology, so they can be audited and disputed (below).
 - **Operating company:** responsible for the platform, security, and compliance.
 - **Methodology and Integrity Committee:** includes independent members. It owns the evidence-label standards, verification rules, agent admission and tier decisions, dispute resolution, and the scoring methodology. Its decisions and methodology changes are published.
 - **Change management:** methodology changes are versioned and announced before they take effect. Historical records are never re-scored silently.
@@ -818,20 +845,21 @@ Blockchain enforces and records. It does **not** verify identity, revenue, or ma
 
 ## 20.1 Principles
 
-Using AI or smart contracts does not remove securities, commodities, AML, consumer-protection, or data-protection obligations. Compliance is enforced as system state. No round can move to `BINDING` without the relevant jurisdictional gates passing.
+Using AI or smart contracts does not remove securities, commodities, AML, consumer-protection, or data-protection obligations, and neither does being a decentralized launchpad. Whether a token sold through Valthera is a security depends on its facts, not on how it is sold. Compliance is enforced as system state: no sale can move to `BINDING` without the relevant jurisdictional gates passing.
 
 ## 20.2 United States
 
 - **Regulation Crowdfunding:** offerings must run through an SEC-registered broker-dealer or funding portal. Issuers may raise up to $5 million in any 12-month period [11]. Non-accredited investors are subject to annual limits based on income and net worth [12].
 - **Funding-portal restriction:** a registered funding portal may not offer investment advice or recommendations, and may not hold or handle investor funds. Intermediaries that do so must register as broker-dealers [13][14].
-- **Structural consequence:** Valthera keeps its **research function** (assessments and recommendations) structurally separate from any **offering intermediary**. US capital formation runs through registered broker-dealer partners. Information barriers stop research teams and systems from being paid on the basis of offering outcomes.
+- **Structural consequence:** Valthera keeps its **research function** (assessments and recommendations) structurally separate from any **offering intermediary**. US rounds run through registered broker-dealer partners. Information barriers stop research teams and systems from being paid on the basis of offering outcomes.
+- **Token sales:** a project token sold as an investment contract is a security [16]. US buyers can take part only where the sale runs under an exemption and through a registered intermediary where one is required. Retail (non-accredited) US buyers are possible only under Regulation Crowdfunding, with its per-investor limits and $5 million issuer cap [11][12], or Regulation A; accredited-only sales can use Regulation D Rule 506(c). Otherwise the sale excludes US persons, for example under Regulation S. A token that is not a security avoids these regimes, but consumer-protection and anti-fraud rules still apply to retail buyers.
 - **Other exemptions:** Regulation D and Regulation A offerings are supported through partners, with their own investor-eligibility gates.
 - **AI-specific rulemaking:** the SEC's 2023 predictive-data-analytics proposal was withdrawn in June 2025 [15]. General anti-fraud and disclosure obligations continue to apply.
 - **Digital assets:** SEC leadership has described a Howey-anchored token taxonomy. Tokenized securities remain securities [16].
 
 ## 20.3 Other jurisdictions
 
-Before launch in each market, Valthera completes a jurisdiction-specific review covering crowdfunding and prospectus regimes, crypto-asset rules, and adviser or arranger licensing. Capital formation is enabled one jurisdiction at a time.
+Before launch in each market, Valthera completes a jurisdiction-specific review covering crowdfunding and prospectus regimes, crypto-asset rules, and adviser or arranger licensing. Rounds and token sales are enabled one jurisdiction at a time.
 
 **European Union.** Regulation (EU) 2020/1503 (ECSPR) covers offers of up to €5 million per project owner over 12 months. Larger offers fall under MiFID II and the Prospectus Regulation. The design consequences are:
 
@@ -841,7 +869,7 @@ Before launch in each market, Valthera completes a jurisdiction-specific review 
 - **Discretion limited to loans:** the ECSPR permits discretionary allocation within investor-set parameters for loans only. Agent-driven allocation of equity for third-party investors in the EU would likely need separate authorization (for example, MiFID II portfolio management). Until then, EU agents deploy only their operators' own capital.
 - **Investor protection and records:** an entry knowledge test, a loss-bearing simulation for non-sophisticated investors, a Key Investment Information Sheet for each offer, and record retention for at least five years.
 
-The UK, Singapore, the UAE, Switzerland, and the EU crypto-asset regulation (MiCA) have not yet been analyzed.
+For tokens that are not financial instruments, the EU's Markets in Crypto-Assets Regulation (MiCA) governs public offers to retail buyers (crypto-asset white papers, marketing rules, withdrawal rights); it has not yet been analyzed in detail. Neither have the UK, Singapore, the UAE, or Switzerland.
 
 ## 20.4 Compliance controls
 
@@ -849,10 +877,11 @@ The UK, Singapore, the UAE, Switzerland, and the EU crypto-asset regulation (MiC
 |---|---|
 | KYC/KYB | All operators, issuers, and investors (natural persons behind agents) |
 | Sanctions and PEP screening | At onboarding and on every binding transition |
-| Investor limits | Enforced in the policy engine, by regime |
+| Investor limits | Enforced in the policy engine for agents and in the sale contract for every buyer, by regime (for example Regulation Crowdfunding's annual limits for retail buyers) |
 | Communications | Assessments carry standardized risk disclosures and conflict statements |
 | Records | Retained per applicable regulatory retention rules |
 | Agent operator responsibility | Operators attest to their own regulatory status |
+| Jurisdiction gating | Each buyer's vault or wallet carries an attested jurisdiction and buyer class (retail or accredited); the sale contract rejects deposits from excluded ones |
 
 # 21. Business Model
 
@@ -862,21 +891,22 @@ The UK, Singapore, the UAE, Switzerland, and the EU crypto-asset regulation (MiC
 | Agent infrastructure | Hosted runtime, API usage, policy vaults, reporting | Fees are usage-based, not outcome-based |
 | Enterprise data | Benchmarks, methodology datasets (de-identified) | Aggregation thresholds |
 | Project verification fee | Flat fee to run the Evidence Engine | Paid before labels are produced. The fee is identical regardless of outcome. Labels cannot be bought |
-| Capital-formation fees | Through licensed partners where permitted | Partner-collected, disclosed, separated from research |
+| Capital-formation fees | Rounds: through licensed partners where permitted | Partner-collected, disclosed, separated from research |
+| Launch fees | Token sales: a flat listing fee per sale, and a disclosed fee on sale proceeds collected by the sale contract | Both are set before diligence starts and can't vary with labels or valuation; research compensation is not tied to them |
 
-**No token.** A token does not establish demand, improve investment quality, or create a sustainable business by itself. Valthera's economics rest on fees for services.
+**No Valthera token.** Projects' tokens can be sold through Valthera's launch venue, but Valthera issues none of its own: a platform token does not establish demand, improve investment quality, or create a sustainable business by itself. Valthera's economics rest on fees for services.
 
 # 22. Go-to-Market
 
 ## 22.1 Beachhead: crypto and Web3 projects
 
-These projects publish documentation, contracts, tokenomics, repositories, and onchain data. That gives the Evidence Engine verifiable material beyond the deck.
+These projects publish documentation, contracts, tokenomics, code repositories, and onchain or testnet data. That gives the Evidence Engine verifiable material beyond the deck, and they raise in both venues: equity-style rounds and, before their token exists, token launches.
 
 ## 22.2 Sequence
 
-1. **Diligence product:** projects receive evidence-labeled memos, valuation distributions, and risk maps. A pilot group of independent investors reviews the output, and their actual decisions are recorded for comparison.
-2. **Agent network (T0/T1):** third-party agents publish assessments and indications, and track records start accumulating.
-3. **Capital formation (T2):** conditional commitments settle through licensed partners in the first enabled jurisdictions.
+1. **Diligence product:** projects receive evidence-labeled memos, valuation ranges, and (for token launches) unlock profiles. A pilot group of independent investors reviews the output, and their actual decisions are recorded for comparison.
+2. **Agent network (T0/T1):** third-party agents publish assessments and priced indications on upcoming rounds and sales, and track records start accumulating.
+3. **Capital formation and token sales (T2):** conditional commitments settle through licensed partners, and the first token sales open, in the first enabled jurisdictions; agent commitments bind only after human sign-off.
 4. **Bounded execution (T3):** qualified agents gain automated execution within hard limits.
 5. **Expansion:** AI-native and SaaS businesses, more chains, and third-party agent infrastructure.
 
@@ -886,10 +916,10 @@ Phases are gated by exit criteria, not by dates.
 
 | Phase | Deliverables | Exit criteria |
 |---|---|---|
-| **0 — Foundation** | Claim schema, ingestion sandbox, verification adapters (onchain, repository, token), injection defenses | Label precision ≥ 90% on the audit sample; red-team suite passed |
+| **0 — Foundation** | Claim schema, ingestion sandbox, verification adapters (onchain, repository, token terms), injection defenses | Label precision ≥ 90% on the audit sample; red-team suite passed |
 | **1 — Diligence Product** | Evidence-backed memos, valuation engine, correction workflow, investor pilot | Investors return and say the output informs their decisions; correction rate within target |
 | **2 — Agent Network** | Agent registry, mandates, policy engine, SDK and MCP server, decision ledger, public scoring | Several independent operators active; scoring methodology published |
-| **3 — Capital Formation** | Commitment state machine, book and auction, escrow contracts, broker-dealer integration | Audited contracts; legal structure live in the first jurisdiction; first compliant rounds closed |
+| **3 — Capital Formation and Token Sales** | Commitment state machine, book and auction, round and sale escrow, vesting vaults, jurisdiction gating, broker-dealer integration | Audited contracts; legal structure live in the first jurisdiction; first compliant rounds and sales closed |
 | **4 — Bounded Execution** | Policy vaults, session keys, T3 admission, circuit breakers | No critical incidents through the T2 period; independent audit passed |
 | **5 — Expansion** | New categories, chains, and jurisdictions; third-party infrastructure | Category-specific methods validated against outcomes |
 
@@ -909,21 +939,24 @@ Phases are gated by exit criteria, not by dates.
 - **Model risk:** agents may misread evidence or be confidently wrong.
 - **Manipulation:** projects may game verification, and agents may collude.
 - **Correlated failure:** agents built on similar models may share blind spots and crowd into the same deals.
-- **Regulatory risk:** the rules governing AI, crowdfunding, and digital assets are changing and differ by jurisdiction. Some features may be unavailable in some markets.
+- **Regulatory risk:** the rules governing AI, token sales, and digital assets are changing and differ by jurisdiction. A token sold through Valthera may be treated as a security; some sales may be unavailable in some markets, or to some buyers.
+- **Launch risk:** tokens can trade far below their sale price after launch, especially when large unlocks follow. Valthera publishes the unlock profile before each sale but cannot prevent price falls, and retail buyers can lose their whole purchase.
+- **Retail protection risk:** selling to retail buyers carries the strictest investor-protection and consumer-protection duties; a sale that falls short of them in any jurisdiction could be unwound or penalized.
 - **Adoption risk:** agent-to-agent commerce is early. Demand may develop more slowly than expected.
 - **Outcome latency:** early-stage outcomes take years, which slows validation of track records.
 - **Security risk:** smart contracts, keys, and integrations are attack surfaces.
-- **Conflict risk:** commercial incentives could pressure analytical independence.
+- **Conflict risk:** Valthera earns more when rounds and sales succeed, which could pressure analytical independence. Fees are fixed before diligence and research pay is not tied to sale outcomes (Section 21), but the pressure remains.
 - **Evidence limits:** no verification process can detect every misrepresentation.
 - **Unproven efficacy:** there is not yet rigorous evidence that AI agents outperform people at early-stage selection. Valthera's scoring framework is designed to measure this, not to assume it.
 
 # 26. Conclusion
 
-An agent that can analyze a business is useful. An agent that can analyze it, judge whether its price is attractive, commit capital within enforceable limits, and be scored against the result is a new kind of market participant.
+An agent that can analyze a project is useful. An agent that can analyze it, judge whether its round or token sale is priced well, commit capital within enforceable limits, and be scored against the result is a new kind of market participant.
 
-Valthera provides the infrastructure that makes such participants **accountable**:
+Valthera is the market built for such participants, in rounds and in token launches, and it makes them **accountable**:
 
 - evidence instead of narrative;
+- valuation ranges, and unlock profiles for token launches, published before anyone commits;
 - plural judgments instead of one score;
 - bounded authority instead of blind autonomy;
 - decision records that cannot be altered after the fact, scored with honest metrics.
@@ -949,7 +982,8 @@ All endpoints use HTTPS with JSON. Authentication uses OAuth 2.0 client credenti
 | `POST` | `/v1/assessments` | Submit a signed assessment with forecasts |
 | `POST` | `/v1/intents` | Submit an indication or commitment intent |
 | `GET` | `/v1/intents/{id}` | Intent status and policy evaluation result |
-| `GET` | `/v1/rounds/{id}/book` | Aggregated demand curve |
+| `GET` | `/v1/rounds/{id}/book` | Aggregated demand curve for a round |
+| `GET` | `/v1/sales/{id}/book` | Aggregated demand curve for a token sale |
 | `GET` | `/v1/agents/{id}/record` | Track record and scores |
 | `GET` | `/v1/records/{id}/proof` | Merkle inclusion proof for a decision record |
 | `POST` | `/v1/webhooks` | Subscribe to events |
@@ -1065,7 +1099,7 @@ X-Valthera-Signature: 0x<eip712-signature>
 
 **Selection-versus-price attribution:**
 - Selection is measured by the forecast skill of the agent's decisions to invest or decline.
-- Price is the realized multiple at the agent's entry valuation compared with the round's clearing valuation.
+- Price is the realized multiple at the agent's entry valuation or price compared with the round's or sale's clearing level.
 
 # Appendix D — Glossary
 
@@ -1081,7 +1115,10 @@ X-Valthera-Signature: 0x<eip712-signature>
 | Mandate | A signed, declarative policy defining an agent's universe, evidence thresholds, and limits |
 | Policy engine | The deterministic service that evaluates intents against mandates and tier rules |
 | Policy vault | A smart-contract account that enforces spending limits and allowlists onchain |
-| Session key | A short-lived key scoped to a single round and amount cap |
+| Session key | A short-lived key scoped to a single sale and amount cap |
+| Round | An equity-style raise (SAFE, priced equity, convertible note) settled through a regulated partner |
+| Token sale | A project's sale of its tokens (or token warrants) through a Valthera sale contract, before its token launches, to agents and people, including retail buyers where permitted |
+| Unlock overhang | Tokens unlocking in a period ÷ tokens circulating at its start; reported for the first 12 months after launch |
 | Tier (T0–T3) | An agent's level of execution authority |
 
 # Appendix E — References
