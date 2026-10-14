@@ -13,7 +13,9 @@ This folder holds the project's foundational documents.
 | Document | What it is | Read it if you want to… |
 |---|---|---|
 | **[`Valthera_Whitepaper_v1.0.pdf`](./Valthera_Whitepaper_v1.0.pdf)**| **Version 1.0 technical whitepaper:** architecture, evidence engine, valuation engine, mandate policy language, permission tiers and policy vaults, capital-formation mechanisms (books, uniform-price auctions, milestone tranches), settlement, scoring, threat model, API reference and schemas. Also covers: problem, design principles, system architecture, evidence engine, valuation framework, agent mandates and permissions, capital formation, track records, security, legal considerations, business model, roadmap, and risks. | Understand what Valthera is and how it would work. |
-| **[`Valthera_Research_Report_v1.0.pdf`](./Valthera_Research_Report_v1.0.pdf)** | The research behind the whitepaper. Five sub-questions are answered from primary sources (SEC, FINRA, Federal Register, OWASP, METR, OECD.AI, AngelList), with confidence ratings and known gaps. | Check the facts behind the whitepaper, or see what's still unresolved. |
+| **[`Valthera_Research_Report_v1.0.pdf`](./Valthera_Research_Report_v1.0.pdf)** | The research behind the whitepaper. Six research questions are answered from primary sources (SEC, FINRA, Federal Register, OWASP, METR, OECD.AI, AngelList), with confidence ratings and known gaps. | Check the facts behind the whitepaper, or see what's still unresolved. |
+| [`Valthera_Whitepaper_v1.0.md`](./Valthera_Whitepaper_v1.0.md) | Markdown source of the v1.0 whitepaper PDF. | Read or edit the whitepaper as text. |
+| [`Valthera_Whitepaper.md`](./Valthera_Whitepaper.md) | An earlier, shorter draft (19 sections). **Superseded by v1.0**, kept for history. | Compare with v1.0. Not the current version. |
 
 **Suggested reading order:** the Whitepaper's Abstract and Sections 1–3, then the Research Report's *Confidence and gaps* section, then the rest of the Whitepaper.
 
@@ -53,6 +55,9 @@ This folder holds the project's foundational documents.
 - Lack of evidence that AI agents outperform people at early-stage selection
 - Competitive landscape
 - Whether founders will accept public assessments with evidence labels
+- US state-level requirements (blue-sky notice filings, state adviser registration)
+- Market sizing (none is claimed in the whitepaper)
+- Tax treatment of agent-held positions and cross-border instruments
 
 ---
 

@@ -833,6 +833,16 @@ Using AI or smart contracts does not remove securities, commodities, AML, consum
 
 Before launch in each market, Valthera completes a jurisdiction-specific review covering crowdfunding and prospectus regimes, crypto-asset rules, and adviser or arranger licensing. Capital formation is enabled one jurisdiction at a time.
 
+**European Union.** Regulation (EU) 2020/1503 (ECSPR) covers offers of up to €5 million per project owner over 12 months. Larger offers fall under MiFID II and the Prospectus Regulation. The design consequences are:
+
+- **Establishment:** crowdfunding services may be provided only by legal persons established in the Union and authorized there, so EU capital formation requires an EU subsidiary.
+- **No inducements:** providers may not pay or accept remuneration for routing investors' orders to a particular offer, consistent with the usage-based and outcome-independent fees in Section 21.
+- **Own-platform investing:** providers may not invest in offers on their own platform, so platform and agent capital must stay separate.
+- **Discretion limited to loans:** the ECSPR permits discretionary allocation within investor-set parameters for loans only. Agent-driven allocation of equity for third-party investors in the EU would likely need separate authorization (for example, MiFID II portfolio management). Until then, EU agents deploy only their operators' own capital.
+- **Investor protection and records:** an entry knowledge test, a loss-bearing simulation for non-sophisticated investors, a Key Investment Information Sheet for each offer, and record retention for at least five years.
+
+The UK, Singapore, the UAE, Switzerland, and the EU crypto-asset regulation (MiCA) have not yet been analyzed.
+
 ## 20.4 Compliance controls
 
 | Control | Implementation |
